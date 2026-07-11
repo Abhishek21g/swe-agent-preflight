@@ -70,6 +70,7 @@ code {
 }
 @media (min-width: 640px) { .deck-inner { padding: 0 2rem 4rem; } }
 
+/* nav */
 .deck-nav {
   display: flex;
   justify-content: center;
@@ -115,16 +116,23 @@ code {
   justify-content: center;
 }
 
+/* hero */
 .deck-hero { scroll-margin-top: 6rem; padding-top: 2.5rem; }
 @media (min-width: 1024px) { .deck-hero { padding-top: 3.5rem; } }
 .deck-hero-row {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
-@media (min-width: 960px) {
-  .deck-hero-row { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+@media (min-width: 1280px) {
+  .deck-hero-row {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+  }
 }
+.deck-hero-copy { min-width: 0; flex: 1; }
 .deck-eyebrow {
   font-family: var(--mono);
   font-size: 0.72rem;
@@ -135,87 +143,114 @@ code {
 }
 .deck-title {
   font-family: var(--serif);
-  font-size: clamp(2.6rem, 6vw, 4rem);
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
   font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
   text-wrap: balance;
 }
 .deck-subtitle {
-  margin-top: 0.75rem;
+  margin-top: 0.85rem;
   font-family: var(--serif);
-  font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+  font-size: clamp(1.25rem, 2.8vw, 1.75rem);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.12;
   color: color-mix(in srgb, var(--foreground) 88%, transparent);
 }
 .deck-lede {
-  margin-top: 1rem;
+  margin-top: 1.15rem;
   color: var(--muted);
   font-size: 0.98rem;
-  max-width: 42rem;
-  line-height: 1.7;
+  max-width: 44rem;
+  line-height: 1.72;
 }
 @media (min-width: 640px) { .deck-lede { font-size: 1.05rem; } }
 
+/* stats — all numeric, epistemic-fork proportions */
 .deck-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem 2rem;
-  padding: 1.35rem 1.5rem;
+  gap: 1.25rem 2.5rem;
+  width: 100%;
+  max-width: 22.5rem;
+  padding: 1.5rem 1.75rem;
   border: 1px solid var(--border);
-  border-radius: 1.25rem;
+  border-radius: 1.5rem;
   background: var(--panel);
-  min-width: 240px;
   flex-shrink: 0;
 }
-@media (min-width: 640px) { .deck-stats { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 960px) { .deck-stats { grid-template-columns: repeat(2, 1fr); width: 15rem; } }
+@media (min-width: 640px) {
+  .deck-stats {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: none;
+    gap: 1.25rem 2rem;
+  }
+}
+@media (min-width: 1280px) {
+  .deck-stats {
+    width: 22.5rem;
+    max-width: 22.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 3rem;
+  }
+}
+.deck-stat { min-width: 0; }
 .deck-stats dt {
-  font-size: 0.68rem;
+  font-size: 0.76rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
 }
 .deck-stats dd {
   font-family: var(--serif);
-  font-size: 1.85rem;
-  font-weight: 400;
-  margin-top: 0.15rem;
+  font-size: 2.15rem;
+  font-weight: 500;
+  line-height: 1;
+  margin-top: 0.35rem;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
+/* toolbar — stacked on mobile, hint always visible */
 .deck-toolbar {
   position: sticky;
   top: 0;
   z-index: 20;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin: 2rem -1.25rem 0;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 2.25rem -1.25rem 0;
   padding: 1rem 1.25rem;
   border-block: 1px solid var(--border);
-  background: color-mix(in srgb, var(--background) 90%, transparent);
-  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--background) 92%, transparent);
+  backdrop-filter: blur(12px);
 }
 @media (min-width: 640px) { .deck-toolbar { margin-inline: -2rem; padding-inline: 2rem; } }
-.deck-toolbar-left {
+
+.deck-toolbar-top {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  flex-wrap: wrap;
-  flex: 1;
+  gap: 0.75rem;
   min-width: 0;
 }
 .deck-label {
-  font-size: 0.78rem;
-  font-weight: 500;
+  flex-shrink: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
   color: var(--muted-strong);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
 }
+.mode-tabs-wrap {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  mask-image: linear-gradient(90deg, transparent, #000 8px, #000 calc(100% - 8px), transparent);
+}
+.mode-tabs-wrap::-webkit-scrollbar { display: none; }
 .mode-tabs {
   display: inline-flex;
   gap: 0.125rem;
@@ -223,6 +258,7 @@ code {
   background: var(--surface);
   border-radius: 0.5rem;
   border: 1px solid var(--border);
+  min-width: min-content;
 }
 .mode-tabs button {
   font-family: inherit;
@@ -231,7 +267,7 @@ code {
   color: var(--muted);
   background: transparent;
   border: none;
-  padding: 0.35rem 0.75rem;
+  padding: 0.42rem 0.8rem;
   border-radius: 0.375rem;
   cursor: pointer;
   white-space: nowrap;
@@ -241,30 +277,33 @@ code {
 .mode-tabs button.active {
   background: var(--accent-soft);
   color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent-soft);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
 }
-.toolbar-hint {
-  display: none;
-  color: var(--muted);
-  font-size: 0.92rem;
-  flex: 1;
-  min-width: 200px;
-  line-height: 1.5;
-}
-@media (min-width: 1024px) { .toolbar-hint { display: block; } }
 .status-chip {
+  flex-shrink: 0;
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--muted);
   border: 1px solid var(--border);
   background: var(--surface-2);
-  padding: 0.35rem 0.75rem;
+  padding: 0.35rem 0.65rem;
   border-radius: 999px;
   white-space: nowrap;
 }
+.toolbar-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding-left: 0.1rem;
+}
+@media (min-width: 768px) {
+  .toolbar-hint { font-size: 0.92rem; max-width: 52rem; }
+}
 
+/* panels */
 .deck-grid {
   margin-top: 1.5rem;
   display: flex;
@@ -289,9 +328,7 @@ code {
   overflow: hidden;
   box-shadow: 0 1px 0 rgba(237, 238, 233, 0.04) inset, 0 18px 40px -28px rgba(0, 0, 0, 0.9);
 }
-.panel-header {
-  padding: 1.15rem 1.35rem 0;
-}
+.panel-header { padding: 1.15rem 1.35rem 0; }
 .panel-title {
   font-family: var(--serif);
   font-size: 1.25rem;
