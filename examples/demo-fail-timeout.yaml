@@ -1,0 +1,22 @@
+instance_id: demo-fail-timeout
+repo: sympy/sympy
+base_commit: deadbeef
+mock_scenario: fail_timeout
+test_files:
+  - sympy/core/tests/test_basic.py
+fail_to_pass:
+  - sympy/core/tests/test_basic.py
+test_files_reset: true
+patch_ordering: agent_then_test
+has_git_remote: false
+patch_applies_cleanly: true
+run_duration_seconds: 3600
+grading_env_hash: sha256:demo-lock-timeout
+dependency_manifest: requirements.txt
+test_patch: |
+  diff --git a/sympy/core/tests/test_basic.py b/sympy/core/tests/test_basic.py
+  --- a/sympy/core/tests/test_basic.py
+  +++ b/sympy/core/tests/test_basic.py
+  @@ -1 +1 @@
+  +def test_new(): pass
+agent_patch: ""

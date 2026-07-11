@@ -1,0 +1,22 @@
+instance_id: demo-fail-patch-order
+repo: pytest-dev/pytest
+base_commit: cafebabe
+mock_scenario: fail_patch_ordering
+test_files:
+  - testing/test_mark.py
+fail_to_pass:
+  - testing/test_mark.py
+test_files_reset: true
+patch_ordering: test_then_agent
+has_git_remote: false
+patch_applies_cleanly: true
+run_duration_seconds: 900
+grading_env_hash: sha256:demo-lock-order
+dependency_manifest: requirements.txt
+test_patch: |
+  diff --git a/testing/test_mark.py b/testing/test_mark.py
+  --- a/testing/test_mark.py
+  +++ b/testing/test_mark.py
+  @@ -1 +1 @@
+  +def test_x(): pass
+agent_patch: ""

@@ -1,0 +1,30 @@
+instance_id: demo-fail-gate1
+repo: django/django
+base_commit: abc123def456
+mock_scenario: fail_test_file_integrity
+problem_statement: |
+  Fix queryset filtering bug in admin module.
+test_files:
+  - tests/admin/test_filters.py
+fail_to_pass:
+  - tests/admin/test_filters.py
+test_files_reset: false
+patch_ordering: agent_then_test
+has_git_remote: false
+patch_applies_cleanly: true
+run_duration_seconds: 1200
+grading_env_hash: sha256:demo-lock-abc123
+dependency_manifest: requirements.txt
+test_patch: |
+  diff --git a/tests/admin/test_filters.py b/tests/admin/test_filters.py
+  --- a/tests/admin/test_filters.py
+  +++ b/tests/admin/test_filters.py
+  @@ -1 +1,2 @@
+  +def test_fail_to_pass_filter():
+  +    assert True
+agent_patch: |
+  diff --git a/django/contrib/admin/filters.py b/django/contrib/admin/filters.py
+  --- a/django/contrib/admin/filters.py
+  +++ b/django/contrib/admin/filters.py
+  @@ -1 +1,2 @@
+  +# agent fix

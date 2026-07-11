@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swe-agent-preflight"
+version = "0.1.0"
+description = "Harness invariant gates before SWE-bench-style agent grading"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Abhishek Enaguthi" }]
+dependencies = [
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+swe-agent-preflight = "swe_agent_preflight.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["swe_agent_preflight*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
