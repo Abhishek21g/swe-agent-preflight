@@ -1,77 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SWE Agent Preflight — Harness gates before SWE-bench grading</title>
-  <meta name="description" content="Gate SWE-bench-style agent evals on harness invariants — test reset, patch ordering, git leakage, timeouts — before trusting scores.">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SWE Agent Preflight — harness gates before SWE-bench grading</title>
+  <meta name="description" content="Gate SWE-bench-style agent evals on seven harness invariants — test reset, patch ordering, git leakage, timeouts — before trusting benchmark scores." />
+  <meta property="og:title" content="SWE Agent Preflight" />
+  <meta property="og:description" content="Agent eval scores are meaningless without harness preflight." />
+  <meta property="og:url" content="https://enaguthi.com/swe-agent-preflight/site/" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <p class="eyebrow">Independent tool · Inspired by Cognition's published SWE-bench methodology</p>
-      <h1>SWE Agent Preflight</h1>
-      <p class="lead">Agent eval scores are meaningless without harness preflight. Gate patch application on seven invariants before grading.</p>
-      <div class="cta-row">
-        <a class="btn primary" href="https://github.com/Abhishek21g/swe-agent-preflight" target="_blank" rel="noopener">GitHub</a>
-        <button class="btn" id="btn-pass" type="button">Demo: PASS receipt</button>
-        <button class="btn fail" id="btn-fail" type="button">Demo: FAIL gate 1</button>
+  <div class="deck-root">
+    <div class="deck-inner">
+      <nav class="deck-nav">
+        <div class="deck-nav-pill">
+          <a href="#overview" class="active" data-nav="overview">Dashboard</a>
+          <a href="#demo" data-nav="demo">Live Demo</a>
+          <a href="#cli" data-nav="cli">CLI</a>
+          <a href="https://github.com/Abhishek21g/swe-agent-preflight" target="_blank" rel="noopener">GitHub</a>
+          <button type="button" class="theme-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">☀</button>
+        </div>
+      </nav>
+
+      <header id="overview" class="deck-hero">
+        <div class="deck-hero-row">
+          <div>
+            <p class="deck-eyebrow">Agent eval · Harness invariants</p>
+            <h1 class="deck-title">SWE Agent Preflight</h1>
+            <p class="deck-subtitle">Gate patch application before SWE-bench-style grading</p>
+            <p class="deck-lede">
+              Cognition's public SWE-bench report documents a precise pipeline: strip git remotes, reset test files,
+              apply agent patch then test patch. Their SWE-1.6 update notes real eval fragility — dependency drift,
+              timeout inconsistency, patch collection edge cases. Most teams publish scores without preflighting those invariants.
+            </p>
+          </div>
+          <dl class="deck-stats">
+            <div><dt>Gates</dt><dd>7</dd></div>
+            <div><dt>Tests</dt><dd>21</dd></div>
+            <div><dt>Dataset</dt><dd>0</dd></div>
+            <div><dt>Verdicts</dt><dd>PASS/FAIL</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <div class="deck-toolbar" id="demo">
+        <div class="deck-toolbar-left">
+          <span class="deck-label">Scenario</span>
+          <div class="mode-tabs" role="tablist" aria-label="Harness scenario">
+            <button role="tab" data-mode="pass" class="active" aria-selected="true">All pass</button>
+            <button role="tab" data-mode="fail-gate1">Dirty test file</button>
+            <button role="tab" data-mode="fail-order">Reversed patches</button>
+            <button role="tab" data-mode="fail-timeout">Timeout exceeded</button>
+          </div>
+          <span class="toolbar-hint" id="scenarioHint">Clean harness — all seven invariants pass. Score is trustworthy.</span>
+        </div>
+        <span class="status-chip" id="statusChip">mock mode · no SWE-bench download</span>
       </div>
-    </div>
-  </header>
 
-  <main class="wrap">
-    <section class="problem">
-      <h2>The problem</h2>
-      <p>Cognition's SWE-bench technical report documents a precise grading pipeline: strip git remotes, reset test files, apply agent patch then test patch. Their SWE-1.6 research update notes real eval fragility — <em>dependency issues, inconsistent timeouts, patch collection edge cases</em>. Most teams publish scores without preflighting those invariants.</p>
-    </section>
+      <div class="deck-grid">
+        <div class="deck-grid-2">
+          <section class="panel verdict-panel">
+            <header class="panel-header">
+              <div>
+                <h2 class="panel-title">Harness verdict</h2>
+                <p class="panel-desc">Should this agent run enter grading? One failed gate invalidates the score.</p>
+              </div>
+            </header>
+            <div class="panel-body">
+              <div class="verdict-display" id="verdictDisplay">
+                <span class="verdict-word pass" id="verdictWord">PASS</span>
+                <p class="verdict-plain" id="verdictPlain">All seven harness invariants hold. Safe to publish this eval score.</p>
+              </div>
+              <div class="score-bar-wrap">
+                <div class="score-bar-label">
+                  <span>Gate pass rate</span>
+                  <strong id="passRate">7/7</strong>
+                </div>
+                <div class="score-bar"><div class="score-bar-fill" id="passBar" style="width:100%"></div></div>
+              </div>
+            </div>
+            <footer class="panel-footer">
+              <span id="instanceMeta">demo-pass · django/django · swebench-lite</span>
+            </footer>
+          </section>
 
-    <section class="dashboard">
-      <div class="panel meta-panel">
-        <div class="overall" id="overall">—</div>
-        <div class="meta-grid">
-          <div><label>Instance</label><code id="instance-id">—</code></div>
-          <div><label>Profile</label><code id="profile">swebench-lite</code></div>
-          <div><label>Mode</label><code>mock</code></div>
+          <section class="panel counts-panel">
+            <header class="panel-header">
+              <h2 class="panel-title">Severity breakdown</h2>
+            </header>
+            <div class="panel-body counts-grid" id="countsGrid">
+              <div class="count-card pass"><span class="count-num" id="countPass">7</span><span class="count-label">Pass</span></div>
+              <div class="count-card fail"><span class="count-num" id="countFail">0</span><span class="count-label">Fail</span></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel gates-panel">
+          <header class="panel-header">
+            <div>
+              <h2 class="panel-title">Doctor gates</h2>
+              <p class="panel-desc">Seven invariants from Cognition's published SWE-bench agent harness methodology.</p>
+            </div>
+          </header>
+          <div class="panel-body">
+            <ul class="gate-list" id="gateList"></ul>
+          </div>
+        </section>
+
+        <div class="deck-grid-2">
+          <section class="panel story-panel">
+            <header class="panel-header">
+              <h2 class="panel-title">What just happened</h2>
+              <p class="panel-desc">Plain English — no PR context required.</p>
+            </header>
+            <div class="panel-body">
+              <ol class="story-steps" id="storySteps"></ol>
+            </div>
+          </section>
+
+          <section class="panel receipt-panel">
+            <header class="panel-header">
+              <div class="panel-title-row">
+                <h2 class="panel-title">Receipt JSON</h2>
+                <button type="button" class="ghost-sm" id="copyReceipt">Copy</button>
+              </div>
+              <p class="panel-desc">CI-friendly summary written by <code>doctor --json</code>.</p>
+            </header>
+            <div class="panel-body">
+              <pre class="receipt-pre" id="receiptPre"></pre>
+            </div>
+          </section>
         </div>
       </div>
 
-      <table class="gate-table">
-        <thead>
-          <tr><th>Gate</th><th>Status</th><th>Detail</th></tr>
-        </thead>
-        <tbody id="gate-body"></tbody>
-      </table>
-    </section>
+      <section class="library" id="scenarios">
+        <div class="library-head">
+          <h2>Scenario library</h2>
+          <p>Four bundled mock runs — the same receipts the CLI ships. Click to load.</p>
+        </div>
+        <div class="scenario-grid" id="scenarioGrid"></div>
+      </section>
 
-    <section class="cli">
-      <h2>CLI</h2>
-      <pre><code id="cli-snippet">pip install -e .
-swe-agent-preflight run --mock --instance examples/demo-pass.yaml
-swe-agent-preflight doctor --receipt out/receipts/demo-pass/ --json
-swe-agent-preflight report --receipt out/receipts/demo-pass/ --html report.html</code></pre>
-    </section>
+      <section class="cli-section" id="cli">
+        <div class="cli-head">
+          <h2>CLI — 60-second demo</h2>
+          <p>Install once, run mock scenarios offline. No Devin API. No SWE-bench download.</p>
+        </div>
+        <div class="cli-block">
+          <div class="cli-line"><span class="cli-prompt">$</span><code>pip install git+https://github.com/Abhishek21g/swe-agent-preflight</code></div>
+          <div class="cli-line"><span class="cli-prompt">$</span><code id="cliRun">swe-agent-preflight run --mock --instance examples/demo-pass.yaml</code></div>
+          <div class="cli-line"><span class="cli-prompt">$</span><code id="cliDoctor">swe-agent-preflight doctor --receipt out/receipts/demo-pass/ --json</code></div>
+          <div class="cli-line"><span class="cli-prompt">$</span><code id="cliReport">swe-agent-preflight report --receipt out/receipts/demo-pass/ --html report.html</code></div>
+        </div>
+      </section>
 
-    <section class="gates-ref">
-      <h2>Seven doctor gates</h2>
-      <ol>
-        <li><strong>test_file_integrity</strong> — test files from test_patch reset before extraction</li>
-        <li><strong>patch_ordering</strong> — agent patch before test_patch</li>
-        <li><strong>git_leakage</strong> — no remote / no extra commits</li>
-        <li><strong>timeout_policy</strong> — run within profile ceiling (45m SWE-bench)</li>
-        <li><strong>grading_env_fingerprint</strong> — dependency manifest + lock hash</li>
-        <li><strong>patch_apply_dry_run</strong> — patch applies cleanly</li>
-        <li><strong>fail_to_pass_manifest</strong> — expected tests non-empty</li>
-      </ol>
-    </section>
-  </main>
-
-  <footer class="site-footer wrap">
-    <p>Not affiliated with Cognition or Devin. PR track targets CognitionAI public OSS separately.</p>
-    <p><a href="https://enaguthi.com">enaguthi.com</a> · <a href="https://github.com/Abhishek21g/swe-agent-preflight">Source</a></p>
-  </footer>
-
-  <script src="app.js"></script>
+      <footer class="deck-foot">
+        <p>Inspired by Cognition's published SWE-bench methodology. Independent tool — not affiliated with Cognition or Devin.</p>
+        <p><a href="https://enaguthi.com">enaguthi.com</a> · <a href="https://github.com/Abhishek21g/swe-agent-preflight">Source</a></p>
+      </footer>
+    </div>
+  </div>
 </body>
 </html>

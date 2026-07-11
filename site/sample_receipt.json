@@ -1,0 +1,44 @@
+{
+  "instance_id": "demo-fail-gate1",
+  "harness_profile": "swebench-lite",
+  "evaluated_at": "2026-07-11T04:00:00+00:00",
+  "passed": false,
+  "overall": "FAIL",
+  "gates": [
+    {
+      "name": "test_file_integrity",
+      "passed": false,
+      "detail": "agent-modified test files not reset: ['tests/admin/test_filters.py']"
+    },
+    {
+      "name": "patch_ordering",
+      "passed": true,
+      "detail": "agent patch applied before test_patch"
+    },
+    {
+      "name": "git_leakage",
+      "passed": true,
+      "detail": "no git remote and no commits beyond base ancestry"
+    },
+    {
+      "name": "timeout_policy",
+      "passed": true,
+      "detail": "run duration 1200s within swebench-lite ceiling 2700s"
+    },
+    {
+      "name": "grading_env_fingerprint",
+      "passed": true,
+      "detail": "manifest=requirements.txt lock=sha256:demo-lock-abc123"
+    },
+    {
+      "name": "patch_apply_dry_run",
+      "passed": true,
+      "detail": "git apply --check passed"
+    },
+    {
+      "name": "fail_to_pass_manifest",
+      "passed": true,
+      "detail": "1 fail-to-pass test(s): ['tests/admin/test_filters.py']"
+    }
+  ]
+}
